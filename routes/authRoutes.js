@@ -17,7 +17,7 @@ router.get('/google/callback',
             }
         }
         const userToken = jwt.sign(data, JWT_SECRET);
-        res.redirect(`http://localhost:3000/login/success?token=${userToken}`);
+        res.redirect(`https://sunriseinteriorhub.onrender.com/login/success?token=${userToken}`);
 
     }
 );
