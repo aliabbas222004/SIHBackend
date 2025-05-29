@@ -11,14 +11,14 @@ router.get('/getItem/:id', async (req, res) => {
 });
 
 router.get('/getAllItems/:type', async (req, res) => {
-    if(req.params.type==='all'){
+    if (req.params.type === 'all') {
 
         const items = await Item.find();
         if (!items) {
             return res.status(404).json({ error: "Item not found" });
         }
         res.json(items);
-    }else{
+    } else {
         const items = await Item.find({ category: req.params.type });
         if (!items) {
             return res.status(404).json({ error: "Item not found" });
@@ -49,6 +49,24 @@ router.post('/addItem', upload.array('images', 5), async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add item' });
+    }
+});
+
+
+router.get('/searchItem', async (req, res) => {
+    const query = req.query.q;
+    try {
+        const items = await Item.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } },
+                { category: { $regex: query, $options: 'i' } },
+                { id: { $regex: query, $options: 'i' } }
+            ]
+        });
+        return res.status(200).json(items);
+    } catch (err) {
+        return res.status(500).json({error:"Server error"});
     }
 });
 
